@@ -18,13 +18,12 @@ android {
 ```
 - 依赖
 ```
-    allprojects {
-        repositories {
-            google()
-            mavenCentral()
-            maven { url 'https://jitpack.io' }
-        }
-    }
+     allprojects {
+  		repositories {
+  			...
+  			maven { url 'https://jitpack.io' }
+  		}
+  	}   
 
     dependencies {
         ...
