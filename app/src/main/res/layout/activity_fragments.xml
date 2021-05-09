@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.FragmentContainerActivity">
+
+    <com.yuehai.widget.StatusBarImageView
+        android:id="@+id/toolbar_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/toolbarColor"
+        android:fitsSystemWindows="true" />
+
+    <com.yuehai.widget.StatusBarHeightView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:orientation="vertical"
+        app:use_type="use_padding_top">
+
+        <com.yuehai.widget.CustomToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize" />
+
+        <FrameLayout
+            android:id="@+id/common_container_fl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.yuehai.widget.StatusBarHeightView>
+</FrameLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="demo1VM"
+            type="com.yuehai.mvvm.vm.Demo1ViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->demo1VM.clickText()}"
+            android:text="@{demo1VM.testBtn}" />
+
+        <Button
+            android:id="@+id/demo_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->demo1VM.clickToPage()}"
+            android:text="点下我试试" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->demo1VM.loadData()}"
+            android:text="模拟个网络请求" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->demo1VM.showBottomDialog()}"
+            android:text="清空结果" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#4AFF9800"
+            android:text="@{demo1VM.testData}" />
+    </LinearLayout>
+</layout>
