@@ -28,7 +28,7 @@ android {
 
     dependencies {
         ...
-        implementation 'com.github.zhaoyuehai:MVVMDemo:1.0.1'
+        implementation 'com.github.zhaoyuehai:mvvm:1.0.0'
     }
 
 ```
