@@ -1,5 +1,4 @@
 # MVVM
-[![](https://jitpack.io/v/zhaoyuehai/mvvm.svg)](https://jitpack.io/#zhaoyuehai/mvvm)
 - 先让你的项目支持dataBinding
 
   app/build.gradle
@@ -16,7 +15,7 @@ android {
    }
 }
 ```
-- 依赖
+- [![](https://jitpack.io/v/zhaoyuehai/mvvm.svg)](https://jitpack.io/#zhaoyuehai/mvvm)
 ```
      allprojects {
   		repositories {
