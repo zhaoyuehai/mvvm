@@ -20,7 +20,7 @@
             android:id="@+id/toolbar"
             android:background="@color/teal_700"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="?actionBarSize"
             app:title="@{mapVM.title}" />
 
         <com.amap.api.maps.MapView

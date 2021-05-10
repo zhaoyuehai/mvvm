@@ -1,5 +1,6 @@
 package com.yuehai.mvvm.ui
 
+import android.app.Activity
 import com.yuehai.basic.BaseVMFragment
 import com.yuehai.mvvm.BR
 import com.yuehai.mvvm.R
@@ -12,12 +13,11 @@ import com.yuehai.mvvm.vm.Demo1ViewModel
 class Demo1Fragment :
     BaseVMFragment<FragmentDemo1Binding, Demo1ViewModel>(
         R.layout.fragment_demo1,
-        Demo1ViewModel::class.java
+        Demo1ViewModel::class.java,
+        BR.demo1VM
     ) {
-    override val variableId = BR.demo1VM
-
-    override fun addObserver() {
-        super.addObserver()
+    override fun addObserver(activity: Activity) {
+        super.addObserver(activity)
         viewModel.toPage.observe(this) {
             if (it) viewDataBinding?.demoTest?.text = "你点击我了哈哈😁"
         }

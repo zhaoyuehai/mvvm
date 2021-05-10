@@ -9,7 +9,6 @@ import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.ActivityMapBinding
 import com.yuehai.mvvm.vm.MapViewModel
 
-
 /**
  * Created by zhaoyuehai 2021/5/8
  */

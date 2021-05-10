@@ -12,5 +12,5 @@ abstract class BaseViewModel : ViewModel() {
     val bottomDialog = SingleLiveEvent<Pair<String, ((positive: Boolean) -> Unit)>?>()
     val showLoading = SingleLiveEvent<String?>()
     val finish = SingleLiveEvent<Boolean?>()
-    open fun init(savedInstanceState: Bundle? = null) {}
+    open fun init(savedInstanceState: Bundle?, arguments: Bundle? = null) {}
 }

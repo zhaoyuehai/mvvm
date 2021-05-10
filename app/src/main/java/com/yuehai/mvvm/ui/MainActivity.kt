@@ -1,6 +1,5 @@
 package com.yuehai.mvvm.ui
 
-
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract

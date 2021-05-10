@@ -24,10 +24,13 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize" />
-
-        <FrameLayout
-            android:id="@+id/common_container_fl"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/common_container_tbl"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="?actionBarSize"/>
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/common_container_vp2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </com.yuehai.widget.StatusBarHeightView>
 </FrameLayout>

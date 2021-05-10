@@ -18,11 +18,9 @@ import com.yuehai.util.DialogUtil
  */
 abstract class BaseVMFragment<DB : ViewDataBinding, VM : BaseViewModel>(
     override val layout: Int,
-    private val viewModelClass: Class<VM>
+    private val viewModelClass: Class<VM>,
+    @IdRes protected val variableId: Int
 ) : BaseFragment(layout) {
-
-    @get:IdRes
-    protected abstract val variableId: Int
 
     protected lateinit var viewModel: VM
     protected var viewDataBinding: DB? = null
@@ -41,41 +39,39 @@ abstract class BaseVMFragment<DB : ViewDataBinding, VM : BaseViewModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewDataBinding?.setVariable(variableId, viewModel)
-        addObserver()
-        viewModel.init(savedInstanceState)
+        activity?.let { addObserver(it) }
+        viewModel.init(savedInstanceState, arguments)
     }
 
-    open fun addObserver() {
-        context?.let { context ->
-            viewModel.finish.observe(this, {
-                if (context is Activity && it != null) {
-                    if (it) context.setResult(Activity.RESULT_OK)
-                    context.finish()
-                }
-            })
-            viewModel.toast.observe(this, {
-                if (it != null && it.isNotEmpty()) {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
-            })
-            viewModel.bottomDialog.observe(this, {
-                if (it != null) {
-                    DialogUtil.showBottomDialog(
-                        context, it.first
-                    ) { _, which ->
-                        it.second.invoke(which == DialogInterface.BUTTON_POSITIVE)
-                    }
-                }
-            })
-            if (context is BaseActivity) {
-                viewModel.showLoading.observe(this, {
-                    if (it == null) {
-                        context.dismissLoading()
-                    } else {
-                        context.showLoading(it)
-                    }
-                })
+    open fun addObserver(activity: Activity) {
+        viewModel.finish.observe(this, {
+            if (it != null) {
+                if (it) activity.setResult(Activity.RESULT_OK)
+                activity.finish()
             }
+        })
+        viewModel.toast.observe(this, {
+            if (it != null && it.isNotEmpty()) {
+                Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.bottomDialog.observe(this, {
+            if (it != null) {
+                DialogUtil.showBottomDialog(
+                    activity, it.first
+                ) { _, which ->
+                    it.second.invoke(which == DialogInterface.BUTTON_POSITIVE)
+                }
+            }
+        })
+        if (activity is BaseActivity) {
+            viewModel.showLoading.observe(this, {
+                if (it == null) {
+                    activity.dismissLoading()
+                } else {
+                    activity.showLoading(it)
+                }
+            })
         }
     }
 
