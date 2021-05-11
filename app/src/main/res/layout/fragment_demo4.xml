@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="demo4VM"
+            type="com.yuehai.mvvm.vm.Demo4ViewModel" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{demo4VM.title}"
+            android:textColor="@color/toolbarColor"
+            android:textSize="24sp" />
+    </FrameLayout>
+</layout>

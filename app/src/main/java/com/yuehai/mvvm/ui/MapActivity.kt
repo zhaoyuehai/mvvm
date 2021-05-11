@@ -17,8 +17,8 @@ class MapActivity : BaseVMActivity<ActivityMapBinding, MapViewModel>() {
     override val variableId = BR.mapVM
     override val viewModelClass = MapViewModel::class.java
     override fun getCustomToolbar() = viewDataBinding?.toolbar
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun init(savedInstanceState: Bundle?) {
+        super.init(savedInstanceState)
         viewDataBinding?.mapView?.let { mapView ->
             mapView.onCreate(savedInstanceState)
             mapView.map?.addMarker(

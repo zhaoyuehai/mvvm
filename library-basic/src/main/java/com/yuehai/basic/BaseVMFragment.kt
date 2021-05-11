@@ -16,16 +16,15 @@ import com.yuehai.util.DialogUtil
 /**
  * Created by zhaoyuehai 2021/4/25
  */
-abstract class BaseVMFragment<DB : ViewDataBinding, VM : BaseViewModel>(
+open class BaseVMFragment<DB : ViewDataBinding, VM : BaseViewModel>(
     override val layout: Int,
     private val viewModelClass: Class<VM>,
     @IdRes protected val variableId: Int
 ) : BaseFragment(layout) {
-
     protected lateinit var viewModel: VM
     protected var viewDataBinding: DB? = null
 
-    override fun onCreateView(
+    final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,14 +35,14 @@ abstract class BaseVMFragment<DB : ViewDataBinding, VM : BaseViewModel>(
         return viewDataBinding?.root ?: inflater.inflate(layout, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewDataBinding?.setVariable(variableId, viewModel)
-        activity?.let { addObserver(it) }
+        activity?.let { init(it) }
         viewModel.init(savedInstanceState, arguments)
     }
 
-    open fun addObserver(activity: Activity) {
+    open fun init(activity: Activity) {
         viewModel.finish.observe(this, {
             if (it != null) {
                 if (it) activity.setResult(Activity.RESULT_OK)

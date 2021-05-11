@@ -1,4 +1,5 @@
 # MVVM
+
 - 先让你的项目支持dataBinding
 
   app/build.gradle

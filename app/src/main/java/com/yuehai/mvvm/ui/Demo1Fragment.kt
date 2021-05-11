@@ -16,8 +16,8 @@ class Demo1Fragment :
         Demo1ViewModel::class.java,
         BR.demo1VM
     ) {
-    override fun addObserver(activity: Activity) {
-        super.addObserver(activity)
+    override fun init(activity: Activity) {
+        super.init(activity)
         viewModel.toPage.observe(this) {
             if (it) viewDataBinding?.demoTest?.text = "你点击我了哈哈😁"
         }

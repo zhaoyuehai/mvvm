@@ -17,8 +17,8 @@ public class Demo2Fragment extends BaseVMFragment<FragmentDemo2Binding, Demo2Vie
     }
 
     @Override
-    public void addObserver(@NotNull Activity activity) {
-        super.addObserver(activity);
+    public void init(@NotNull Activity activity) {
+        super.init(activity);
         FragmentDemo2Binding viewDataBinding = getViewDataBinding();
         if (viewDataBinding != null) {
             viewDataBinding.demo2Tv.setTextColor(Color.BLUE);

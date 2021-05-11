@@ -2,6 +2,7 @@ package com.yuehai.mvvm.ui
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContract
 import com.yuehai.basic.BaseVMActivity
 import com.yuehai.mvvm.BR
@@ -23,8 +24,8 @@ class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>() {
         }) {
         }
 
-    override fun addObserver() {
-        super.addObserver()
+    override fun init(savedInstanceState: Bundle?) {
+        super.init(savedInstanceState)
         viewModel.toPage.observe(this, {
             when (it) {
                 0 -> secondLauncher.launch(null)

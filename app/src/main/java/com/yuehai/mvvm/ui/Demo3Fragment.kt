@@ -13,8 +13,8 @@ class Demo3Fragment : BaseVMFragment<FragmentDemo3Binding, Demo3ViewModel>(
     Demo3ViewModel::class.java,
     BR.demo3VM
 ) {
-    override fun addObserver(activity: Activity) {
-        super.addObserver(activity)
+    override fun init(activity: Activity) {
+        super.init(activity)
         viewDataBinding?.demo3Tv?.setTextColor(Color.MAGENTA)
     }
 }

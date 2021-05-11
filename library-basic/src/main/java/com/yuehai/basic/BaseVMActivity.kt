@@ -35,7 +35,7 @@ abstract class BaseVMActivity<DB : ViewDataBinding, VM : BaseViewModel> : BaseAc
 
     protected open fun getCustomToolbar(): CustomToolbar? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    final override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(viewModelClass)
         viewDataBinding = DataBindingUtil.setContentView(this, layout)
@@ -54,10 +54,10 @@ abstract class BaseVMActivity<DB : ViewDataBinding, VM : BaseViewModel> : BaseAc
                 onToolbarBack()
             }
         }
-        addObserver()
+        init(savedInstanceState)
     }
 
-    open fun addObserver() {
+    open fun init(savedInstanceState: Bundle?) {
         viewModel.finish.observe(this, {
             if (it != null) {
                 if (it) setResult(RESULT_OK)
