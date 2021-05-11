@@ -15,21 +15,6 @@ android {
    }
 }
 ```
-- [![](https://jitpack.io/v/zhaoyuehai/mvvm.svg)](https://jitpack.io/#zhaoyuehai/mvvm)
-```
-     allprojects {
-  		repositories {
-  			...
-  			maven { url 'https://jitpack.io' }
-  		}
-  	}   
-
-    dependencies {
-        ...
-        implementation 'com.github.zhaoyuehai:mvvm:1.0.0'
-    }
-
-```
 
 ------
 
