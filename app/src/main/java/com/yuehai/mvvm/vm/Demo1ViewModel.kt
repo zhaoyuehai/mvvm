@@ -4,12 +4,10 @@ import android.os.Build
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.yuehai.mvvm.model.ErrorModel
-import com.yuehai.mvvm.model.SuccessModel
 import com.yuehai.basic.BaseViewModel
-import com.yuehai.mvvm.network.RequestCallback
 import com.yuehai.mvvm.repository.Demo1Repository
 import com.yuehai.util.SingleLiveEvent
 
@@ -30,23 +28,22 @@ class Demo1ViewModel : BaseViewModel() {
 
     fun loadData() {
         showLoading.value = ""
-        repository.loadData(object : RequestCallback<String> {
-            override fun onSuccess(result: SuccessModel<String>) {
-                showLoading.value = null
-                toast.value = result.message
+//        repository.loadData1 {
+//            Log.d("Demo1",it.data()?:"")
+//        }
+        repository.loadData2 {
+            showLoading.value = null
+            if (it.isOK()) {
+                toast.value = it.message("请求成功了🤩")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    testData.value = Html.fromHtml(result.data, Html.FROM_HTML_MODE_LEGACY)
+                    testData.value = Html.fromHtml(it.data(), Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    testData.value = SpannableString(result.data)
+                    testData.value = SpannableString(it.data())
                 }
+            } else {
+                toast.value = it.message("请求失败是😂")
             }
-
-            override fun onError(error: ErrorModel) {
-                showLoading.value = null
-                toast.value = error.message() ?: "请求失败"
-            }
-
-        })
+        }
     }
 
     fun showBottomDialog() {

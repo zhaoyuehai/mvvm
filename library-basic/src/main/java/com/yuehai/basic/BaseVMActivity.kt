@@ -43,7 +43,7 @@ abstract class BaseVMActivity<DB : ViewDataBinding, VM : BaseViewModel> : BaseAc
             lifecycleOwner = this@BaseVMActivity
             setVariable(variableId, viewModel)
         }
-        viewModel.init(savedInstanceState)
+        viewModel.init(savedInstanceState, intent.extras)
         if (translucentStatusBarEnable) {
             StatusBarUtil.setStatusBarDarkTheme(this, true)
             StatusBarUtil.setTranslucentStatus(this)

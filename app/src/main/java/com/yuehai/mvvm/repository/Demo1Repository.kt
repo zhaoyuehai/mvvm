@@ -1,8 +1,9 @@
 package com.yuehai.mvvm.repository
 
-import com.yuehai.mvvm.model.SuccessModel
 import com.yuehai.basic.BaseRepository
-import com.yuehai.mvvm.network.RequestCallback
+import com.yuehai.mvvm.model.ResultModel
+import com.yuehai.mvvm.model.SuccessModel
+import com.yuehai.mvvm.network.HttpClient
 import com.yuehai.mvvm.network.request
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,20 +20,15 @@ import java.net.URLConnection
  */
 class Demo1Repository(scope: CoroutineScope) : BaseRepository(scope) {
 
-    fun loadData(
-        callback: RequestCallback<String>
-    ) {
+    fun loadData1(callback: (ResultModel<String>) -> Unit) {
         request(scope, callback) {
-            //TODO Retrofit封装
-//            Retrofit.Builder()
-//                .baseUrl(BuildConfig.BASE_URL)
-//                .client(okHttpClient)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build()
-//                .create(XXXService::class.java)
-//                .loadData()
+            HttpClient.service.test()
+        }
+    }
 
-            load()//TODO 此处假装请求一下
+    fun loadData2(callback: (ResultModel<String>) -> Unit) {
+        request(scope, callback) {
+            load()
         }
     }
 
@@ -57,6 +53,6 @@ class Demo1Repository(scope: CoroutineScope) : BaseRepository(scope) {
                 e.printStackTrace()
             }
         }
-        return SuccessModel("10000", "请求成功", "1.0.0", result)
+        return SuccessModel(200, "请求成功", result)
     }
 }
