@@ -22,7 +22,6 @@
             android:text="@{demo1VM.testBtn}" />
 
         <Button
-            android:id="@+id/demo_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick='@{()->demo1VM.showToast("你点击我了")}'
