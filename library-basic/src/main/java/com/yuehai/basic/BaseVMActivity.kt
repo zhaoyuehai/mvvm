@@ -1,15 +1,10 @@
 package com.yuehai.basic
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
-import com.yuehai.util.DialogUtil
-import com.yuehai.widget.MyProgressDialog
-import com.yuehai.widget.ProgressDialogUtil
 
 /**
  * Created by zhaoyuehai 2021/4/25
@@ -50,15 +45,6 @@ abstract class BaseVMActivity<VB : ViewDataBinding, VM : BaseViewModel>(
                 dismissLoading()
             } else {
                 showLoading(it)
-            }
-        })
-        viewModel.bottomDialog.observe(this, {
-            if (it != null) {
-                DialogUtil.showBottomDialog(
-                    this, it.first
-                ) { _, which ->
-                    it.second.invoke(which == DialogInterface.BUTTON_POSITIVE)
-                }
             }
         })
     }

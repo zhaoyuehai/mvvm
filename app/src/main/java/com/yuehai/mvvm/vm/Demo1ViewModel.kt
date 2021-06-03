@@ -8,13 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.yuehai.basic.BaseViewModel
 import com.yuehai.mvvm.repository.Demo1Repository
+import com.yuehai.util.SingleLiveEvent
 
 /**
  * Created by zhaoyuehai 2021/4/28
  */
 class Demo1ViewModel : BaseViewModel() {
     private val repository = Demo1Repository(viewModelScope)
-
+    val bottomDialog = SingleLiveEvent<Pair<String, ((positive: Boolean) -> Unit)>?>()
     val testData = MutableLiveData<Spanned?>()
     val testBtn = MutableLiveData("点我关闭页面")
 
@@ -39,9 +40,9 @@ class Demo1ViewModel : BaseViewModel() {
     }
 
     fun showBottomDialog() {
-        showBottomDialog(Pair("你确定要删除吗？") {
+        bottomDialog.value = Pair("你确定要删除吗？") {
             testData.value = null
             toast.value = "点了确定"
-        })
+        }
     }
 }

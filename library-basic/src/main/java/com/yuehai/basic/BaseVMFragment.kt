@@ -1,14 +1,12 @@
 package com.yuehai.basic
 
 import android.app.Activity
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
-import com.yuehai.util.DialogUtil
 
 /**
  * Created by zhaoyuehai 2021/4/25
@@ -50,17 +48,6 @@ open class BaseVMFragment<VB : ViewDataBinding, VM : BaseViewModel>(
                 dismissLoading()
             } else {
                 showLoading(it)
-            }
-        })
-        viewModel.bottomDialog.observe(this, {
-            if (it != null) {
-                activity?.let { activity ->
-                    DialogUtil.showBottomDialog(
-                        activity, it.first
-                    ) { _, which ->
-                        it.second.invoke(which == DialogInterface.BUTTON_POSITIVE)
-                    }
-                }
             }
         })
     }

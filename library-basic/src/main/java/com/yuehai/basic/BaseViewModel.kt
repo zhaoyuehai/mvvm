@@ -9,7 +9,6 @@ import com.yuehai.util.SingleLiveEvent
  */
 abstract class BaseViewModel : ViewModel() {
     val toast = SingleLiveEvent<String>()
-    val bottomDialog = SingleLiveEvent<Pair<String, ((positive: Boolean) -> Unit)>?>()
     val showLoading = SingleLiveEvent<String?>()
     val finish = SingleLiveEvent<Boolean?>()
 
@@ -36,10 +35,6 @@ abstract class BaseViewModel : ViewModel() {
 
     fun showToast(msg: String) {
         toast.value = msg
-    }
-
-    fun showBottomDialog(value: Pair<String, (positive: Boolean) -> Unit>) {
-        bottomDialog.value = value
     }
 
     @JvmOverloads
