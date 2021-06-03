@@ -40,7 +40,7 @@ class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>(
 
     override fun onBackPressed() {
         if (System.currentTimeMillis() - exitTime > 1500) {
-            viewModel.showToast("再按一次退出程序")
+            showToast("再按一次退出程序")
             exitTime = System.currentTimeMillis()
         } else {
             finish()

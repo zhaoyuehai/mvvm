@@ -30,15 +30,15 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 弹出加载中dialog
      */
-    internal fun showLoading(msg: String = "") {
+    fun showLoading(msg: String = "") {
         getLoadingDialog().show(msg)
     }
 
-    internal fun dismissLoading() {
+    fun dismissLoading() {
         loadingDialog?.dismiss()
     }
 
-    internal fun showToast(msg: String) {
+    fun showToast(msg: String) {
         if (msg.isNotEmpty())
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
