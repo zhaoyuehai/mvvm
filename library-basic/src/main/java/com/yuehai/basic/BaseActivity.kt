@@ -1,6 +1,14 @@
 package com.yuehai.basic
 
+import android.view.LayoutInflater
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.viewbinding.ViewBinding
 import com.yuehai.widget.MyProgressDialog
 import com.yuehai.widget.ProgressDialogUtil
 
@@ -10,35 +18,44 @@ import com.yuehai.widget.ProgressDialogUtil
 abstract class BaseActivity : AppCompatActivity() {
     private var loadingDialog: MyProgressDialog? = null
 
-    private var onLoadingCancelListener: (() -> Unit?)? = null
-
-    fun setOnLoadingCancelListener(listener: () -> Unit) {
-        this.onLoadingCancelListener = listener
+    fun getLoadingDialog(): MyProgressDialog? {
+        if (loadingDialog == null) loadingDialog = ProgressDialogUtil.getProgressDialog(this)
+        return loadingDialog
     }
 
     /**
      * 弹出加载中dialog
      */
-    fun showLoading(msg: String?) {
-        if (null == loadingDialog) {
-            loadingDialog = ProgressDialogUtil.getProgressDialog(this)
-            loadingDialog?.setOnCancelListener {
-                onLoadingCancelListener?.invoke()
-                onLoadingCancelListener = null
-            }
-        }
-        if (loadingDialog?.isShowing == false) {
-            loadingDialog?.show()
-        }
-        loadingDialog?.setText(msg)
+    fun showLoading(msg: String = "") {
+        getLoadingDialog()?.show(msg)
     }
 
     fun dismissLoading() {
-        ProgressDialogUtil.dismissDialog(loadingDialog)
+        loadingDialog?.dismiss()
     }
 
-    override fun finish() {
-        dismissLoading()
-        super.finish()
+    fun showToast(msg: String) {
+        if (msg.isNotEmpty())
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        loadingDialog?.dismiss()
+        loadingDialog = null
+        super.onDestroy()
     }
 }
+
+fun <VB : ViewBinding> ComponentActivity.binding(inflate: (LayoutInflater) -> VB) =
+    inflate(layoutInflater).also {
+        setContentView(it.root)
+        if (it is ViewDataBinding) {
+            it.lifecycleOwner = this
+            this.lifecycle.addObserver(object : LifecycleObserver {
+                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+                fun onDestroy() {
+                    it.unbind()
+                }
+            })
+        }
+    }

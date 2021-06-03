@@ -7,6 +7,7 @@ import com.yuehai.mvvm.network.HttpClient
 import com.yuehai.mvvm.network.request
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.IOException
@@ -35,6 +36,7 @@ class Demo1Repository(scope: CoroutineScope) : BaseRepository(scope) {
     private suspend fun load(): SuccessModel<String> {
         var result: String? = null
         withContext(Dispatchers.IO) {
+            delay(1500)
             try {
                 val url = URL("https://www.baidu.com")
                 val connection: URLConnection = url.openConnection()

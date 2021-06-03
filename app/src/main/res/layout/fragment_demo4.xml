@@ -8,7 +8,8 @@
             type="com.yuehai.mvvm.vm.Demo4ViewModel" />
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -19,5 +20,16 @@
             android:text="@{demo4VM.title}"
             android:textColor="@color/toolbarColor"
             android:textSize="24sp" />
-    </FrameLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:text="开始转圈"
+            android:onClick='@{()-> demo4VM.showLoading("我正在努力...")}'
+            android:layout_height="wrap_content"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:text="关闭页面"
+            android:onClick='@{()-> demo4VM.finish(true)}'
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 </layout>

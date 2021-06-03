@@ -15,32 +15,19 @@
         android:layout_height="match_parent"
         tools:context=".ui.SecondActivity">
 
-        <com.yuehai.widget.StatusBarImageView
+        <com.yuehai.widget.CustomToolbar
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@color/toolbarColor"
-            android:fitsSystemWindows="true" />
+            app:onBackClickListener="@{()->secondVM.finish()}"
+            app:title="@{secondVM.title}" />
 
-        <com.yuehai.widget.StatusBarHeightView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:orientation="vertical"
-            app:use_type="use_padding_top">
-
-            <com.yuehai.widget.CustomToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                app:title="@{secondVM.title}" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="普通的MVVM Activity"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </com.yuehai.widget.StatusBarHeightView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{secondVM.title}"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </FrameLayout>
 </layout>

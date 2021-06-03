@@ -23,7 +23,8 @@ class MyProgressDialog internal constructor(context: Context) :
         tvTxt = findViewById(R.id.tv_txt)
     }
 
-    fun setText(msg: String?) {
+    fun show(msg: String?) {
+        show()
         if (msg.isNullOrEmpty()) {
             tvTxt.text = ""
             tvTxt.visibility = View.GONE

@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.FragmentContainerActivity">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.yuehai.widget.StatusBarImageView
-        android:id="@+id/toolbar_bg_iv"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="@color/toolbarColor"
-        android:fitsSystemWindows="true" />
+    <data>
+        <import type="android.view.View.OnClickListener" />
 
-    <com.yuehai.widget.StatusBarHeightView
+        <variable
+            name="onBackClick"
+            type="OnClickListener" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@null"
         android:orientation="vertical"
-        app:use_type="use_padding_top">
+        tools:context=".ui.FragmentContainerActivity">
 
         <com.yuehai.widget.CustomToolbar
-            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize" />
+            android:layout_height="?actionBarSize"
+            android:background="@color/teal_700"
+            app:title="Fragment容器页"
+            app:onBackClickListener="@{onBackClick}" />
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/common_container_tbl"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"/>
+            android:layout_height="?actionBarSize" />
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/common_container_vp2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </com.yuehai.widget.StatusBarHeightView>
-</FrameLayout>
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</layout>

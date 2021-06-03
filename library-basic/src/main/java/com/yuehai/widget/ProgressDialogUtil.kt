@@ -37,13 +37,4 @@ object ProgressDialogUtil {
         progress.setCanceledOnTouchOutside(cancelTouch)
         return progress
     }
-
-    /**
-     * 取消对话框
-     *
-     * @param dialog DialogInterface
-     */
-    fun dismissDialog(dialog: DialogInterface?) {
-        dialog?.dismiss()
-    }
 }

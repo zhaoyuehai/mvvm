@@ -5,11 +5,13 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.databinding.BindingAdapter
 import com.yuehai.basic.R
 
 /**
@@ -21,6 +23,7 @@ class CustomToolbar @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     val navButtonView: ImageButton
+    var menuButtonView: ImageButton? = null
     private val mTitleTextView: TextView?
     fun setTitle(title: String?) {
         if (mTitleTextView != null) {
@@ -66,6 +69,27 @@ class CustomToolbar @JvmOverloads constructor(
             navButtonView.setImageResource(R.drawable.ic_back_white)
         }
         addView(navButtonView)
+        val rightIcon = typedArray.getDrawable(R.styleable.CustomToolbar_rightIcon)
+        if (rightIcon != null) {
+            menuButtonView = AppCompatImageButton(context).apply {
+                setImageDrawable(rightIcon)
+                layoutParams = LayoutParams(dp50, dp50).apply {
+                    gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                }
+                setBackgroundResource(R.drawable.control_background_40dp_material)
+                addView(this)
+            }
+        }
         typedArray.recycle()
     }
+}
+
+@BindingAdapter("onBackClickListener")
+fun setOnBackClickListener(itemView: CustomToolbar, onBackClickListener: View.OnClickListener?) {
+    itemView.navButtonView.setOnClickListener(onBackClickListener)
+}
+
+@BindingAdapter("onMenuClickListener")
+fun setOnMenuClickListener(itemView: CustomToolbar, onMenuClickListener: View.OnClickListener?) {
+    itemView.menuButtonView?.setOnClickListener(onMenuClickListener)
 }

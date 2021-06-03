@@ -5,6 +5,12 @@
 
     <data>
 
+        <import type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onMenuClick"
+            type="OnClickListener" />
+
         <variable
             name="mapVM"
             type="com.yuehai.mvvm.vm.MapViewModel" />
@@ -14,13 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ui.SecondActivity">
+        tools:context=".ui.MapActivity">
 
         <com.yuehai.widget.CustomToolbar
-            android:id="@+id/toolbar"
-            android:background="@color/teal_700"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
+            android:background="@color/toolbarColor"
+            app:onBackClickListener="@{()->mapVM.finish()}"
+            app:onMenuClickListener="@{onMenuClick}"
+            app:rightIcon="@drawable/gps"
             app:title="@{mapVM.title}" />
 
         <com.amap.api.maps.MapView

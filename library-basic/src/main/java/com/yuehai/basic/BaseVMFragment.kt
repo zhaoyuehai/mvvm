@@ -3,12 +3,9 @@ package com.yuehai.basic
 import android.app.Activity
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.IdRes
-import androidx.databinding.DataBindingUtil
+import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import com.yuehai.util.DialogUtil
@@ -16,66 +13,55 @@ import com.yuehai.util.DialogUtil
 /**
  * Created by zhaoyuehai 2021/4/25
  */
-open class BaseVMFragment<DB : ViewDataBinding, VM : BaseViewModel>(
-    override val layout: Int,
-    private val viewModelClass: Class<VM>,
-    @IdRes protected val variableId: Int
-) : BaseFragment(layout) {
-    protected lateinit var viewModel: VM
-    protected var viewDataBinding: DB? = null
-
-    final override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewModel = ViewModelProvider(this).get(viewModelClass)
-        viewDataBinding = DataBindingUtil.inflate(inflater, layout, container, false)
-        viewDataBinding?.lifecycleOwner = viewLifecycleOwner
-        return viewDataBinding?.root ?: inflater.inflate(layout, container, false)
-    }
+open class BaseVMFragment<VB : ViewDataBinding, VM : BaseViewModel>(
+    @LayoutRes contentLayoutId: Int,
+    bind: (View) -> VB,
+    @IdRes val variableId: Int,
+    viewModelKClass: Class<VM>
+) : BaseFragment(contentLayoutId) {
+    protected val binding by binding(bind)
+    val viewModel by lazy { ViewModelProvider(this).get(viewModelKClass) }
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewDataBinding?.setVariable(variableId, viewModel)
-        activity?.let { init(it) }
-        viewModel.init(savedInstanceState, arguments)
+        viewModel.initParams(savedInstanceState, arguments)
+        binding.setVariable(variableId, viewModel)
+        initView(savedInstanceState)
+        viewModel.initData()
     }
 
-    open fun init(activity: Activity) {
+    /**
+     * ① ViewModel.initParams(...) → ② Fragment.initView(.) → ③ ViewModel.initData()
+     *
+     * @param savedInstanceState Activity → onCreate(savedInstanceState) / Fragment → onViewCreated(view, savedInstanceState)
+     */
+    protected open fun initView(savedInstanceState: Bundle?) {
         viewModel.finish.observe(this, {
             if (it != null) {
-                if (it) activity.setResult(Activity.RESULT_OK)
-                activity.finish()
+                if (it) activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
             }
         })
         viewModel.toast.observe(this, {
-            if (it != null && it.isNotEmpty()) {
-                Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+            showToast(it)
+        })
+        viewModel.showLoading.observe(this, {
+            if (it == null) {
+                dismissLoading()
+            } else {
+                showLoading(it)
             }
         })
         viewModel.bottomDialog.observe(this, {
             if (it != null) {
-                DialogUtil.showBottomDialog(
-                    activity, it.first
-                ) { _, which ->
-                    it.second.invoke(which == DialogInterface.BUTTON_POSITIVE)
+                activity?.let { activity ->
+                    DialogUtil.showBottomDialog(
+                        activity, it.first
+                    ) { _, which ->
+                        it.second.invoke(which == DialogInterface.BUTTON_POSITIVE)
+                    }
                 }
             }
         })
-        if (activity is BaseActivity) {
-            viewModel.showLoading.observe(this, {
-                if (it == null) {
-                    activity.dismissLoading()
-                } else {
-                    activity.showLoading(it)
-                }
-            })
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewDataBinding?.unbind()
     }
 }

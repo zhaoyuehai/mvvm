@@ -6,15 +6,14 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContract
 import com.yuehai.basic.BaseVMActivity
 import com.yuehai.mvvm.BR
-import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.ActivityMainBinding
 import com.yuehai.mvvm.vm.MainViewModel
 
-class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>() {
-    override val layout = R.layout.activity_main
-    override val variableId = BR.mainVM
-    override val viewModelClass = MainViewModel::class.java
-
+class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>(
+    ActivityMainBinding::inflate,
+    BR.mainVM,
+    MainViewModel::class.java
+) {
     private val secondLauncher =
         registerForActivityResult(object : ActivityResultContract<String?, Boolean>() {
             override fun createIntent(context: Context, input: String?) =
@@ -24,8 +23,8 @@ class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>() {
         }) {
         }
 
-    override fun init(savedInstanceState: Bundle?) {
-        super.init(savedInstanceState)
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
         viewModel.toPage.observe(this, {
             when (it) {
                 0 -> secondLauncher.launch(null)
@@ -36,7 +35,6 @@ class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>() {
             }
         })
     }
-
 
     private var exitTime: Long = 0
 

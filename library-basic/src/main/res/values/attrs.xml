@@ -8,6 +8,7 @@
     </declare-styleable>
     <declare-styleable name="CustomToolbar">
         <attr name="icon" format="reference" />
+        <attr name="rightIcon" format="reference" />
         <attr name="textColor" format="color" />
         <attr name="title" format="string" />
     </declare-styleable>

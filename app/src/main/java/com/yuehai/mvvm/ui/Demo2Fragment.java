@@ -1,7 +1,7 @@
 package com.yuehai.mvvm.ui;
 
-import android.app.Activity;
 import android.graphics.Color;
+import android.os.Bundle;
 
 import com.yuehai.basic.BaseVMFragment;
 import com.yuehai.mvvm.BR;
@@ -9,19 +9,16 @@ import com.yuehai.mvvm.R;
 import com.yuehai.mvvm.databinding.FragmentDemo2Binding;
 import com.yuehai.mvvm.vm.Demo2ViewModel;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Demo2Fragment extends BaseVMFragment<FragmentDemo2Binding, Demo2ViewModel> {
     public Demo2Fragment() {
-        super(R.layout.fragment_demo2, Demo2ViewModel.class, BR.demo2VM);
+        super(R.layout.fragment_demo2, FragmentDemo2Binding::bind, BR.demo2VM, Demo2ViewModel.class);
     }
 
     @Override
-    public void init(@NotNull Activity activity) {
-        super.init(activity);
-        FragmentDemo2Binding viewDataBinding = getViewDataBinding();
-        if (viewDataBinding != null) {
-            viewDataBinding.demo2Tv.setTextColor(Color.BLUE);
-        }
+    protected void initView(@Nullable Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
+        getBinding().demo2Tv.setTextColor(Color.BLUE);
     }
 }
