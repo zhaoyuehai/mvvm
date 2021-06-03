@@ -18,23 +18,27 @@ import com.yuehai.widget.ProgressDialogUtil
 abstract class BaseActivity : AppCompatActivity() {
     private var loadingDialog: MyProgressDialog? = null
 
-    fun getLoadingDialog(): MyProgressDialog? {
-        if (loadingDialog == null) loadingDialog = ProgressDialogUtil.getProgressDialog(this)
-        return loadingDialog
+    fun getLoadingDialog(): MyProgressDialog {
+        var dialog = loadingDialog
+        if (dialog == null) {
+            dialog = ProgressDialogUtil.getProgressDialog(this)
+            loadingDialog = dialog
+        }
+        return dialog
     }
 
     /**
      * 弹出加载中dialog
      */
-    fun showLoading(msg: String = "") {
-        getLoadingDialog()?.show(msg)
+    internal fun showLoading(msg: String = "") {
+        getLoadingDialog().show(msg)
     }
 
-    fun dismissLoading() {
+    internal fun dismissLoading() {
         loadingDialog?.dismiss()
     }
 
-    fun showToast(msg: String) {
+    internal fun showToast(msg: String) {
         if (msg.isNotEmpty())
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }

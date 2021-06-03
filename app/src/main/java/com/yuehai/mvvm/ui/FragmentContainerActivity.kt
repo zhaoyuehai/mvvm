@@ -21,6 +21,9 @@ class FragmentContainerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = binding(ActivityFragmentsBinding::inflate)
+        getLoadingDialog().setOnCancelListener {
+
+        }
         binding.onBackClick = View.OnClickListener {
             finish()
         }
