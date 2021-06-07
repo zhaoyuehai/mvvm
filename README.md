@@ -32,15 +32,16 @@ android {
 ```
 //Kotlin MVVM Activity Sample
 
-class SampleActivity : BaseVMActivity<ActivitySampleBinding, SampleViewModel>() {
-    override val layout = R.layout.activity_sample
-    override val variableId = BR.sampleVM
-    override val viewModelClass = SampleViewModel::class.java
-    override fun getCustomToolbar() = viewDataBinding?.toolbar
-}
+class SampleActivity : BaseVMActivity<ActivitySampleBinding, SampleViewModel>(
+    ActivitySampleBinding::inflate,
+    BR.sampleVM,
+    SampleViewModel::class.java
+)
 
-public class SampleViewModel extends BaseViewModel {
-    public MutableLiveData<String> test = new MutableLiveData<>("Test");
+class SampleViewModel : BaseViewModel() {
+    val title = "普通MVVM页面"
+    private val repository = SampleRepository(viewModelScope)
+    val test = MutableLiveData("test")
 }
 ```
 
@@ -54,7 +55,7 @@ public class SampleViewModel extends BaseViewModel {
 
         <variable
             name="sampleVM"
-            type="com.example.mytest.SampleViewModel" />
+            type="com.example.vm.SampleViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -63,10 +64,11 @@ public class SampleViewModel extends BaseViewModel {
         android:orientation="vertical">
 
         <com.yuehai.widget.CustomToolbar
-            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:background="@color/purple_200"
-            android:layout_height="?actionBarSize" />
+            android:layout_height="?actionBarSize"
+            app:onBackClickListener="@{()->sampleVM.finish()}"
+            app:title="@{sampleVM.title}" />
 
         <TextView
             android:layout_width="wrap_content"
