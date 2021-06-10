@@ -14,9 +14,8 @@ import com.yuehai.util.DialogUtil
  */
 class Demo1Fragment : BaseVMFragment<FragmentDemo1Binding, Demo1ViewModel>(
     R.layout.fragment_demo1,
-    FragmentDemo1Binding::bind,
     BR.demo1VM,
-    Demo1ViewModel::class.java
+    Demo1ViewModel::class
 ){
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

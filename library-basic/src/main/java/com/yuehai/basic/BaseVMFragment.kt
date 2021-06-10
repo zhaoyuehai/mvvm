@@ -2,27 +2,38 @@ package com.yuehai.basic
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.ViewModelProvider
+import kotlin.reflect.KClass
 
 /**
  * Created by zhaoyuehai 2021/4/25
  */
 open class BaseVMFragment<VB : ViewDataBinding, VM : BaseViewModel>(
-    @LayoutRes contentLayoutId: Int,
-    bind: (View) -> VB,
+    @LayoutRes val contentLayoutId: Int,
     @IdRes val variableId: Int,
-    viewModelKClass: Class<VM>
+    viewModelKClass: KClass<VM>
 ) : BaseFragment(contentLayoutId) {
-    protected val binding by binding(bind)
-    val viewModel by lazy { ViewModelProvider(this).get(viewModelKClass) }
+    protected lateinit var binding: VB
+    val viewModel by viewModel(viewModelKClass)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = DataBindingUtil.inflate(inflater, contentLayoutId, container, false)
+        return binding.root
+    }
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.initParams(savedInstanceState, arguments)
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.setVariable(variableId, viewModel)
         initView(savedInstanceState)
         viewModel.initData()

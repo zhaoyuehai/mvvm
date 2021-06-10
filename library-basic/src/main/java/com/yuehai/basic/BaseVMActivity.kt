@@ -1,24 +1,27 @@
 package com.yuehai.basic
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.ViewModelProvider
+import kotlin.reflect.KClass
 
 /**
  * Created by zhaoyuehai 2021/4/25
  */
 abstract class BaseVMActivity<VB : ViewDataBinding, VM : BaseViewModel>(
-    inflate: (LayoutInflater) -> VB,
+    @LayoutRes val contentLayoutId: Int,
     @IdRes val variableId: Int,
-    viewModelKClass: Class<VM>
+    viewModelKClass: KClass<VM>
 ) : BaseActivity() {
-    protected val binding by lazy { binding(inflate) }
-    val viewModel by lazy { ViewModelProvider(this).get(viewModelKClass) }
+    protected lateinit var binding: VB
+    val viewModel by viewModel(viewModelKClass)
 
     final override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, contentLayoutId)
+        binding.lifecycleOwner = this
         viewModel.initParams(savedInstanceState, intent.extras)
         binding.setVariable(variableId, viewModel)
         initView(savedInstanceState)

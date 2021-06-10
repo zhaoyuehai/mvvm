@@ -2,15 +2,14 @@ package com.yuehai.mvvm.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.yuehai.basic.BaseActivity
 import com.yuehai.basic.BaseVMFragment
-import com.yuehai.basic.binding
 import com.yuehai.mvvm.BR
 import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.ActivityFragmentsBinding
-import com.yuehai.mvvm.databinding.FragmentDemo4Binding
 import com.yuehai.mvvm.vm.Demo4ViewModel
 
 /**
@@ -20,10 +19,12 @@ class FragmentContainerActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = binding(ActivityFragmentsBinding::inflate)
-        getLoadingDialog().setOnCancelListener {
-
-        }
+        //TODO
+        val binding =
+            DataBindingUtil.setContentView<ActivityFragmentsBinding>(
+                this,
+                R.layout.activity_fragments
+            )
         binding.onBackClick = View.OnClickListener {
             finish()
         }
@@ -47,9 +48,8 @@ class FragmentContainerActivity : BaseActivity() {
                         2 -> Demo3Fragment()
                         else -> BaseVMFragment(
                             R.layout.fragment_demo4,
-                            FragmentDemo4Binding::bind,
                             BR.demo4VM,
-                            Demo4ViewModel::class.java
+                            Demo4ViewModel::class
                         )
                     }
                 }

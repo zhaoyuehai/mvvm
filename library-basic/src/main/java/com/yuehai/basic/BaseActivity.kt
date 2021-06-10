@@ -1,21 +1,19 @@
 package com.yuehai.basic
 
-import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
+import androidx.lifecycle.ViewModelProvider
 import com.yuehai.widget.MyProgressDialog
 import com.yuehai.widget.ProgressDialogUtil
+import kotlin.reflect.KClass
 
 /**
  * Created by zhaoyuehai 2021/4/27
  */
 abstract class BaseActivity : AppCompatActivity() {
     private var loadingDialog: MyProgressDialog? = null
-
     fun getLoadingDialog(): MyProgressDialog {
         var dialog = loadingDialog
         if (dialog == null) {
@@ -44,14 +42,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 }
 
-fun <VB : ViewDataBinding> BaseActivity.binding(inflate: (LayoutInflater) -> VB) =
-    inflate(layoutInflater).also {
-        setContentView(it.root)
-        it.lifecycleOwner = this
-        this.lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
-                it.unbind()
-            }
-        })
-    }
+fun <VM : ViewModel> BaseActivity.viewModel(
+    viewModelClass: KClass<VM>,
+    factoryProducer: (() -> ViewModelProvider.Factory) = { defaultViewModelProviderFactory }
+) = ViewModelLazy(viewModelClass, { viewModelStore }, factoryProducer)

@@ -1,39 +1,46 @@
 package com.yuehai.mvvm.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.yuehai.basic.BaseVMActivity
 import com.yuehai.mvvm.BR
+import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.ActivityMainBinding
 import com.yuehai.mvvm.vm.MainViewModel
 
 class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>(
-    ActivityMainBinding::inflate,
+    R.layout.activity_main,
     BR.mainVM,
-    MainViewModel::class.java
-) {
-    private val secondLauncher =
-        registerForActivityResult(object : ActivityResultContract<String?, Boolean>() {
-            override fun createIntent(context: Context, input: String?) =
-                Intent(context, SecondActivity::class.java)
+    MainViewModel::class
+), ActivityResultCallback<ActivityResult> {
 
-            override fun parseResult(resultCode: Int, intent: Intent?) = resultCode == RESULT_OK
-        }) {
-        }
+    private lateinit var secondLauncher: ActivityResultLauncher<Intent>
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        secondLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult(), this)
         viewModel.toPage.observe(this, {
             when (it) {
-                0 -> secondLauncher.launch(null)
+                0 -> secondLauncher.launch(Intent(this, SecondActivity::class.java))
                 1 -> startActivity(Intent(this, FragmentContainerActivity::class.java))
                 2 -> startActivity(Intent(this, MapActivity::class.java))
                 else -> {
                 }
             }
         })
+    }
+
+    override fun onActivityResult(result: ActivityResult?) {
+    }
+
+    override fun onDestroy() {
+        secondLauncher.unregister()
+        super.onDestroy()
     }
 
     private var exitTime: Long = 0

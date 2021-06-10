@@ -2,12 +2,11 @@ package com.yuehai.mvvm.ui
 
 import android.os.Bundle
 import android.view.View
-import com.amap.api.maps.CameraUpdateFactory
-import com.amap.api.maps.model.CameraPosition
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.MarkerOptions
 import com.yuehai.basic.BaseVMActivity
 import com.yuehai.mvvm.BR
+import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.ActivityMapBinding
 import com.yuehai.mvvm.vm.MapViewModel
 
@@ -15,12 +14,13 @@ import com.yuehai.mvvm.vm.MapViewModel
  * Created by zhaoyuehai 2021/5/8
  */
 class MapActivity : BaseVMActivity<ActivityMapBinding, MapViewModel>(
-    ActivityMapBinding::inflate,
+    R.layout.activity_map,
     BR.mapVM,
-    MapViewModel::class.java
+    MapViewModel::class
 ) {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        //TODO
         binding.mapView.onCreate(savedInstanceState)
         binding.onMenuClick = View.OnClickListener {
 

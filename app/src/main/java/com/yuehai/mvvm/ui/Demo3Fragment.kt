@@ -10,9 +10,8 @@ import com.yuehai.mvvm.vm.Demo3ViewModel
 
 class Demo3Fragment : BaseVMFragment<FragmentDemo3Binding, Demo3ViewModel>(
     R.layout.fragment_demo3,
-    FragmentDemo3Binding::bind,
     BR.demo3VM,
-    Demo3ViewModel::class.java
+    Demo3ViewModel::class
 ) {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
