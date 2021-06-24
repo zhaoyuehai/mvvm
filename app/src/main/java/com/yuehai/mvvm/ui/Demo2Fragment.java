@@ -6,8 +6,12 @@ import com.yuehai.mvvm.R;
 import com.yuehai.mvvm.databinding.FragmentDemo2Binding;
 import com.yuehai.mvvm.vm.Demo2ViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+import dagger.hilt.android.WithFragmentBindings;
 import kotlin.jvm.JvmClassMappingKt;
 
+@WithFragmentBindings
+@AndroidEntryPoint
 public class Demo2Fragment extends BaseVMFragment<FragmentDemo2Binding, Demo2ViewModel> {
     public Demo2Fragment() {
         super(R.layout.fragment_demo2, BR.demo2VM, JvmClassMappingKt.getKotlinClass(Demo2ViewModel.class));

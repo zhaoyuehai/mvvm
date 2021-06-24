@@ -1,12 +1,11 @@
-package com.yuehai.mvvm.network
+package com.yuehai.mvvm.data.remote
 
-import android.util.Log
-import com.yuehai.mvvm.BuildConfig
 import com.yuehai.mvvm.util.StringUtil
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.internal.http.StatusLine
+import okhttp3.internal.platform.Platform
 import okio.Buffer
 import okio.GzipSource
 import java.io.EOFException
@@ -14,26 +13,77 @@ import java.net.HttpURLConnection
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
-class LoggingInterceptor : Interceptor {
-    private fun log(message: String) {
-        // 以{}或者[]形式的说明是响应结果的json数据，需要进行格式化
+class LoggingInterceptor @JvmOverloads constructor(
+    private val logger: Logger = Logger.DEFAULT
+) : Interceptor {
+
+    @set:JvmName("level")
+    @Volatile
+    var level = Level.BASIC
+
+    enum class Level {
+        /**
+         * No logs.
+         */
+        NONE,
+
+        /**
+         * Logs request and response lines.
+         */
+        BASIC,
+
+        /**
+         * Logs request and response lines and their respective headers.
+         */
+        HEADERS,
+
+        /**
+         * Logs request and response lines and their respective headers and bodies (if present).
+         */
+        BODY
+    }
+
+    fun interface Logger {
+        fun log(message: String)
+
+        companion object {
+            /** A [Logger] defaults output appropriate for the current platform. */
+            @JvmField
+            val DEFAULT: Logger = DefaultLogger()
+
+            private class DefaultLogger : Logger {
+                override fun log(message: String) {
+                    Platform.get().log(Platform.INFO, message, null)
+                }
+            }
+        }
+    }
+
+    fun setLevel(level: Level) = apply {
+        this.level = level
+    }
+
+    private fun formatMessage(message: String) =
         if ((message.startsWith("{") && message.endsWith("}"))
             || (message.startsWith("[") && message.endsWith("]"))
         ) {
-            Log.d("HTTP", StringUtil.formatJson(StringUtil.decodeUnicode(message)))
+            StringUtil.formatJson(StringUtil.decodeUnicode(message))
         } else {
-            Log.d("HTTP", message)
+            message
         }
-    }
 
     @Volatile
     private var headersToRedact = emptySet<String>()
 
     override fun intercept(chain: Interceptor.Chain): Response {
+        val level = this.level
         val request = chain.request()
-        if (!BuildConfig.DEBUG) {
+        if (level == Level.NONE) {
             return chain.proceed(request)
         }
+        val logBody = level == Level.BODY
+        val logHeaders = logBody || level == Level.HEADERS
+
         val requestBody = request.body()
         val connection = chain.connection()
         var requestStartMessage =
@@ -42,27 +92,24 @@ class LoggingInterceptor : Interceptor {
             requestStartMessage += " (${requestBody.contentLength()}-byte body)"
         }
         val requestLog = StringBuilder(" \n").append(requestStartMessage)
-        val headers = request.headers()
-        if (requestBody != null) {
-            requestBody.contentType()?.let {
-                if (headers["Content-Type"] == null) {
-                    requestLog.append("\n").append("Content-Type: $it")
+        if (logHeaders) {
+            val headers = request.headers()
+            if (requestBody != null) {
+                requestBody.contentType()?.let {
+                    if (headers["Content-Type"] == null) {
+                        requestLog.append("\n").append("Content-Type: $it")
+                    }
+                }
+                if (requestBody.contentLength() != -1L) {
+                    if (headers["Content-Length"] == null) {
+                        requestLog.append("\n")
+                            .append("Content-Length: ${requestBody.contentLength()}")
+                    }
                 }
             }
-            if (requestBody.contentLength() != -1L) {
-                if (headers["Content-Length"] == null) {
-                    requestLog.append("\n").append("Content-Length: ${requestBody.contentLength()}")
-                }
-            }
+            appendHeader(requestLog, headers)
         }
-        for (i in 0 until headers.size()) {
-            requestLog.append("\n").append(
-                (headers.name(i) + ": " + if (headers.name(i) in headersToRedact) "██" else headers.value(
-                    i
-                ))
-            )
-        }
-        if (requestBody == null) {
+        if (!logBody || requestBody == null) {
             requestLog.append("\n").append("--> END ${request.method()}")
         } else if (bodyHasUnknownEncoding(request.headers())) {
             requestLog.append("\n").append("--> END ${request.method()} (encoded body omitted)")
@@ -77,9 +124,8 @@ class LoggingInterceptor : Interceptor {
             val contentType = requestBody.contentType()
             val charset: Charset =
                 contentType?.charset(Charset.forName("UTF-8")) ?: Charset.forName("UTF-8")
-            requestLog.append("\n").append("")
             if (buffer.isProbablyUtf8()) {
-                requestLog.append("\n").append(buffer.readString(charset))
+                requestLog.append(formatMessage(buffer.readString(charset)))
                 requestLog.append("\n")
                     .append("--> END ${request.method()} (${requestBody.contentLength()}-byte body)")
             } else {
@@ -87,35 +133,40 @@ class LoggingInterceptor : Interceptor {
                     .append("--> END ${request.method()} (binary ${requestBody.contentLength()}-byte body omitted)")
             }
         }
+        logger.log(requestLog.toString())
+        //response
         val startNs = System.nanoTime()
         val response: Response
         try {
             response = chain.proceed(request)
         } catch (e: Exception) {
-            requestLog.append("\n").append("<-- HTTP FAILED: $e")
+            logger.log("<-- HTTP FAILED: $e")
             throw e
         }
-        log(requestLog.toString())
+        val responseLog = StringBuilder()
         val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
         val responseBody = response.body()
+        if (logHeaders) {
+            appendHeader(responseLog, response.headers())
+        }
         if (responseBody != null) {
             val contentLength = responseBody.contentLength()
             val bodySize = if (contentLength != -1L) "$contentLength-byte" else "unknown-length"
-            log(
+            responseLog.append(
                 " \n<-- ${response.code()}${
                     if (response.message().isEmpty()) "" else ' ' + response.message()
                 } ${response.request().url()} (${tookMs}ms${", $bodySize body"})"
             )
-            if (!response.promisesBody()) {
-                log("<-- END HTTP")
+            if (!logBody || !response.promisesBody()) {
+                responseLog.append(" \n<-- END HTTP")
             } else if (bodyHasUnknownEncoding(response.headers())) {
-                log("<-- END HTTP (encoded body omitted)")
+                responseLog.append(" \n<-- END HTTP (encoded body omitted)")
             } else {
                 val source = responseBody.source()
                 source.request(Long.MAX_VALUE) // Buffer the entire body.
                 var buffer = source.buffer
                 var gzippedLength: Long? = null
-                if ("gzip".equals(headers["Content-Encoding"], ignoreCase = true)) {
+                if ("gzip".equals(response.headers()["Content-Encoding"], ignoreCase = true)) {
                     gzippedLength = buffer.size()
                     GzipSource(buffer.clone()).use { gzippedResponseBody ->
                         buffer = Buffer()
@@ -126,22 +177,36 @@ class LoggingInterceptor : Interceptor {
                 val charset: Charset =
                     contentType?.charset(Charset.forName("UTF-8")) ?: Charset.forName("UTF-8")
                 if (!buffer.isProbablyUtf8()) {
-                    log("")
-                    log("<-- END HTTP (binary ${buffer.size()}-byte body omitted)")
+                    responseLog.append(" \n<-- END HTTP (binary ${buffer.size()}-byte body omitted)")
+                    logger.log(responseLog.toString())
                     return response
                 }
                 if (contentLength != 0L) {
-                    log("")
-                    log(buffer.clone().readString(charset))
+                    responseLog.append(formatMessage(buffer.clone().readString(charset)))
                 }
                 if (gzippedLength != null) {
-                    log("<-- END HTTP (${buffer.size()}-byte, $gzippedLength-gzipped-byte body)")
+                    responseLog.append(
+                        " \n<-- END HTTP (${buffer.size()}-byte, $gzippedLength-gzipped-byte body)"
+                    )
                 } else {
-                    log("<-- END HTTP (${buffer.size()}-byte body)")
+                    responseLog.append(" \n<-- END HTTP (${buffer.size()}-byte body)")
                 }
             }
         }
+        logger.log(responseLog.toString())
         return response
+    }
+
+    private fun appendHeader(sb: StringBuilder, headers: Headers) {
+        for (i in 0 until headers.size()) {
+            sb.append(
+                " \n${headers.name(i)}: ${
+                    if (headers.name(i) in headersToRedact) "██" else headers.value(
+                        i
+                    )
+                }"
+            )
+        }
     }
 
     private fun bodyHasUnknownEncoding(headers: Headers): Boolean {

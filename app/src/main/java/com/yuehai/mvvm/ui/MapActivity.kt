@@ -9,10 +9,12 @@ import com.yuehai.mvvm.BR
 import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.ActivityMapBinding
 import com.yuehai.mvvm.vm.MapViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by zhaoyuehai 2021/5/8
  */
+@AndroidEntryPoint
 class MapActivity : BaseVMActivity<ActivityMapBinding, MapViewModel>(
     R.layout.activity_map,
     BR.mapVM,

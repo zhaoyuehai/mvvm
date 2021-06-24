@@ -18,7 +18,7 @@ open class BaseVMFragment<VB : ViewDataBinding, VM : BaseViewModel>(
     @LayoutRes val contentLayoutId: Int,
     @IdRes val variableId: Int,
     viewModelKClass: KClass<VM>
-) : BaseFragment(contentLayoutId) {
+) : BaseFragment() {
     protected lateinit var binding: VB
     val viewModel by viewModel(viewModelKClass)
     override fun onCreateView(

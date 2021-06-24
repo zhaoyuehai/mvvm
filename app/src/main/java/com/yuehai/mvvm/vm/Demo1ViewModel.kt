@@ -1,38 +1,29 @@
 package com.yuehai.mvvm.vm
 
-import android.os.Build
-import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.yuehai.basic.BaseViewModel
-import com.yuehai.mvvm.repository.Demo1Repository
+import com.yuehai.mvvm.data.DataRepository
 import com.yuehai.util.SingleLiveEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 /**
  * Created by zhaoyuehai 2021/4/28
  */
-class Demo1ViewModel : BaseViewModel() {
-    private val repository = Demo1Repository(viewModelScope)
+@HiltViewModel
+class Demo1ViewModel @Inject constructor(private val repository: DataRepository) : BaseViewModel() {
     val bottomDialog = SingleLiveEvent<Pair<String, ((positive: Boolean) -> Unit)>?>()
-    val testData = MutableLiveData<Spanned?>()
+    val testData = MutableLiveData<String>()
     val testBtn = MutableLiveData("点我关闭页面")
 
     fun loadData() {
         showLoading("加载中...")
-//        repository.loadData1 {
-//            Log.d("Demo1",it.data()?:"")
-//        }
-        repository.loadData2 {
+        repository.loadData(viewModelScope) {
             dismissLoading()
             if (it.isOK()) {
                 showToast(it.message("请求成功了🤩"))
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    testData.value = Html.fromHtml(it.data(), Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    testData.value = SpannableString(it.data())
-                }
+                testData.value = it.data().toString()
             } else {
                 showToast(it.message("请求失败是😂"))
             }
@@ -41,7 +32,7 @@ class Demo1ViewModel : BaseViewModel() {
 
     fun showBottomDialog() {
         bottomDialog.value = Pair("你确定要删除吗？") {
-            testData.value = null
+            testData.value = ""
             toast.value = "点了确定"
         }
     }

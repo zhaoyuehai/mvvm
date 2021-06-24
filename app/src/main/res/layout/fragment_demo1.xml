@@ -25,13 +25,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick='@{()->demo1VM.showToast("你点击我了")}'
-            android:text="点下我试试" />
+            android:text="点下我吧" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{()->demo1VM.loadData()}"
-            android:text="模拟个网络请求" />
+            android:text="网络请求" />
 
         <Button
             android:layout_width="wrap_content"

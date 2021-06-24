@@ -1,35 +1,37 @@
-package com.yuehai.mvvm.network
+package com.yuehai.mvvm.data.remote
 
 import android.annotation.SuppressLint
+import com.yuehai.mvvm.BuildConfig
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-/**
- * Created by zhaoyuehai 2021/4/27
- */
-object HttpClient {
-    val service: DemoService by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://wwww.baidu.com")
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(DemoService::class.java)
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
 
-    private val okHttpClient: OkHttpClient by lazy {
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
-            .addNetworkInterceptor(LoggingInterceptor())
+            .addNetworkInterceptor(
+                LoggingInterceptor().setLevel(
+                    if (BuildConfig.DEBUG) LoggingInterceptor.Level.BODY else LoggingInterceptor.Level.NONE
+                )
+            )
             .connectTimeout(15000L, TimeUnit.MILLISECONDS)
-//            .addInterceptor(TokenInterceptor())
         //绕过SSL验证
         val x509TrustManager = object : X509TrustManager {
 
@@ -58,13 +60,16 @@ object HttpClient {
             builder.sslSocketFactory(ssfFactory, x509TrustManager)
                 .hostnameVerifier { _, _ -> true }
         }
-        builder.build()
+        return builder.build()
     }
 
-    /**
-     * 取消请求
-     */
-    fun cancelAll() {
-        okHttpClient.dispatcher().cancelAll()
-    }
+    @Provides
+    @Singleton
+    fun provideApiService(okHttpClient: OkHttpClient): ApiService = Retrofit
+        .Builder()
+        .baseUrl(BuildConfig.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
 }

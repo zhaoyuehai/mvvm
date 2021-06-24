@@ -10,8 +10,11 @@ import com.yuehai.basic.BaseVMActivity
 import com.yuehai.mvvm.BR
 import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.ActivityMainBinding
+import com.yuehai.mvvm.util.observe
 import com.yuehai.mvvm.vm.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>(
     R.layout.activity_main,
     BR.mainVM,
@@ -24,15 +27,15 @@ class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>(
         super.initView(savedInstanceState)
         secondLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult(), this)
-        viewModel.toPage.observe(this, {
-            when (it) {
-                0 -> secondLauncher.launch(Intent(this, SecondActivity::class.java))
-                1 -> startActivity(Intent(this, FragmentContainerActivity::class.java))
-                2 -> startActivity(Intent(this, MapActivity::class.java))
-                else -> {
-                }
-            }
-        })
+        observe(viewModel.toPage, ::navigatePage)
+    }
+
+    private fun navigatePage(position: Int) {
+        when (position) {
+            0 -> secondLauncher.launch(Intent(this, SecondActivity::class.java))
+            1 -> startActivity(Intent(this, FragmentContainerActivity::class.java))
+            2 -> startActivity(Intent(this, MapActivity::class.java))
+        }
     }
 
     override fun onActivityResult(result: ActivityResult?) {

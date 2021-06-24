@@ -1,6 +1,5 @@
 package com.yuehai.basic
 
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
@@ -9,8 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import kotlin.reflect.KClass
 
-abstract class BaseFragment @JvmOverloads constructor(@LayoutRes contentLayoutId: Int = 0) :
-    Fragment(contentLayoutId)
+abstract class BaseFragment : Fragment()
 
 inline fun <reified A : FragmentActivity> BaseFragment.castActivity() = activity?.let {
     if (it is A) it else null

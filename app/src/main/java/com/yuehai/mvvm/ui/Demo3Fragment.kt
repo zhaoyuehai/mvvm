@@ -7,7 +7,9 @@ import com.yuehai.mvvm.BR
 import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.FragmentDemo3Binding
 import com.yuehai.mvvm.vm.Demo3ViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class Demo3Fragment : BaseVMFragment<FragmentDemo3Binding, Demo3ViewModel>(
     R.layout.fragment_demo3,
     BR.demo3VM,

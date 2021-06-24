@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">mvvmDemo</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
 </resources>

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.widget.TextView
-import com.yuehai.basic.R
+import com.yuehai.mvvm.R
 
 class BottomDialog(context: Context) : Dialog(
     context, R.style.MyDialog
