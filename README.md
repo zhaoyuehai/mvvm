@@ -22,7 +22,6 @@ android {
 ![1624525489](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525489.png)
 ![1624525525](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525525.png)
 
-
 -------
 
 - 例子
