@@ -19,11 +19,13 @@ android {
 
 ------
 
-![030122](https://github.com/zhaoyuehai/mvvm/blob/master/img/030122.png)
+![1624525471](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525471.png)
+![1624525489](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525489.png)
+![1624525500](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525500.png)
+![1624525510](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525510.png)
+![1624525525](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525525.png)
+![1624525532](https://github.com/zhaoyuehai/mvvm/blob/master/img/1624525532.png)
 
-![030139](https://github.com/zhaoyuehai/mvvm/blob/master/img/030139.png)
-
-![030342](https://github.com/zhaoyuehai/mvvm/blob/master/img/030342.png)
 
 -------
 
