@@ -8,9 +8,9 @@ import retrofit2.http.GET
  * Created by zhaoyuehai 2021/4/27
  */
 interface ApiService {
-    @GET("test")
+    @GET("api/v1/test")
     suspend fun testData(): SuccessModel<TestData>
 
-    @GET("testList")
+    @GET("api/v1/testList")
     suspend fun testListData(): SuccessModel<List<TestData>>
 }
