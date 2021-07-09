@@ -157,7 +157,9 @@ class LoggingInterceptor @JvmOverloads constructor(
                     if (response.message().isEmpty()) "" else ' ' + response.message()
                 } ${response.request().url()} (${tookMs}ms${", $bodySize body"})"
             )
-            if (!logBody || !response.promisesBody()) {
+            if (!logBody || !response.promisesBody() || responseBody.contentType()
+                    .toString() != "application/json"
+            ) {
                 responseLog.append(" \n<-- END HTTP")
             } else if (bodyHasUnknownEncoding(response.headers())) {
                 responseLog.append(" \n<-- END HTTP (encoded body omitted)")

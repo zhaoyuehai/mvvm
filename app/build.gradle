@@ -11,14 +11,14 @@ android {
 
     defaultConfig {
         applicationId "com.yuehai.mvvm"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField('String', 'BASE_URL', '"http://192.168.96.146:3000/mock/27/"')
+        buildConfigField('String', 'BASE_URL', '"http://192.168.96.146"')
     }
     signingConfigs {
         release {

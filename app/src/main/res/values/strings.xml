@@ -2,4 +2,6 @@
     <string name="app_name">mvvmDemo</string>
     <string name="cancel">取消</string>
     <string name="confirm">确认</string>
+    <string name="start_download">开始下载</string>
+    <string name="start_upload">选择文件上传</string>
 </resources>

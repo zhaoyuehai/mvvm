@@ -35,6 +35,7 @@ class MainActivity : BaseVMActivity<ActivityMainBinding, MainViewModel>(
             0 -> secondLauncher.launch(Intent(this, SecondActivity::class.java))
             1 -> startActivity(Intent(this, FragmentContainerActivity::class.java))
             2 -> startActivity(Intent(this, MapActivity::class.java))
+            3 -> startActivity(Intent(this, SnowListDemoActivity::class.java))
         }
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -8,17 +8,45 @@
             type="com.yuehai.mvvm.vm.Demo3ViewModel" />
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/demo3_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="@{demo3VM.title}"
             android:textColor="@color/toolbarColor"
             android:textSize="24sp" />
-    </FrameLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->demo3VM.download()}"
+            android:text="@string/start_download" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{demo3VM.downLoadMessage}"
+            android:textColor="#F44336"
+            android:textSize="14sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->demo3VM.upload()}"
+            android:text="@string/start_upload" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{demo3VM.uploadMessage}"
+            android:textColor="#009688"
+            android:textSize="14sp" />
+    </LinearLayout>
 </layout>

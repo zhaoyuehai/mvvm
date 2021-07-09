@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="50dp"
+            android:layout_margin="25dp"
             android:text="@{mainVM.test}" />
 
         <Button
@@ -34,14 +34,22 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="25dp"
             android:onClick="@{()->mainVM.toPage(1)}"
             android:text="跳转到Fragment容器页" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="25dp"
             android:onClick="@{()->mainVM.toPage(2)}"
             android:text="高德地图" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:onClick="@{()->mainVM.toPage(3)}"
+            android:text="雪球列表联动Demo" />
     </LinearLayout>
 </layout>
