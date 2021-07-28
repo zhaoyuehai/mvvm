@@ -14,6 +14,8 @@ inline fun <reified A : FragmentActivity> BaseFragment.castActivity() = activity
     if (it is A) it else null
 }
 
+fun BaseFragment.getLoadingDialog() = castActivity<BaseActivity>()?.getLoadingDialog()
+
 fun BaseFragment.showLoading(msg: String = "") = castActivity<BaseActivity>()?.showLoading(msg)
 
 fun BaseFragment.dismissLoading() = castActivity<BaseActivity>()?.dismissLoading()

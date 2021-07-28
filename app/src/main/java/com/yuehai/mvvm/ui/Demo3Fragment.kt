@@ -9,6 +9,7 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.yuehai.basic.BaseVMFragment
+import com.yuehai.basic.getLoadingDialog
 import com.yuehai.mvvm.BR
 import com.yuehai.mvvm.R
 import com.yuehai.mvvm.databinding.FragmentDemo3Binding
@@ -26,6 +27,9 @@ class Demo3Fragment : BaseVMFragment<FragmentDemo3Binding, Demo3ViewModel>(
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         binding.demo3Tv.setTextColor(Color.MAGENTA)
+        getLoadingDialog()?.setOnCancelListener {
+            viewModel.onCancelLoading()
+        }
         observe(viewModel.pickFile, ::pickFile)
     }
 

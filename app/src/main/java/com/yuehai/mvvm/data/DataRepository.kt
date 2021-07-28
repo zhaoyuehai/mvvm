@@ -7,7 +7,10 @@ import com.yuehai.mvvm.data.model.ResultModel
 import com.yuehai.mvvm.data.model.TestData
 import com.yuehai.mvvm.data.remote.ApiService
 import com.yuehai.mvvm.data.remote.ProgressRequestBody
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -46,7 +49,7 @@ open class DataRepository @Inject constructor(
         scope: CoroutineScope,
         callback: (ResultModel<T>) -> Unit,
         block: suspend CoroutineScope.() -> ResultModel<T>
-    ): Job = scope.launch(Dispatchers.IO) {
+    ) = scope.launch(Dispatchers.IO) {
         try {
             val result = block()
             withContext(Dispatchers.Main) {
@@ -136,46 +139,44 @@ open class DataRepository @Inject constructor(
         url: String,
         fileName: String,
         listener: ProgressListener
-    ) {
-        scope.launch(Dispatchers.IO) {
-            try {
-                val response = apiService.download(url)
-                val body = response.body() ?: throw RuntimeException("下载失败")
-                val totalLength = body.contentLength()
-                if (totalLength <= 0) throw RuntimeException("下载失败")
-                val ios = body.byteStream()
-                val ops =
-                    FileOutputStream(File("${application.getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS)}${java.io.File.separator}$fileName"))
-                var currentLength = 0L
-                val bufferSize = 1024 * 8
-                val buffer = ByteArray(bufferSize)
-                val bufferedInputStream = BufferedInputStream(ios, bufferSize)
-                var readLength: Int
-                var currentMB = 0L
-                while (bufferedInputStream.read(buffer, 0, bufferSize)
-                        .also { readLength = it } != -1
-                ) {
-                    ops.write(buffer, 0, readLength)
-                    currentLength += readLength
-                    (currentLength / 1024 / 1024).let { //大于1M显示进度
-                        if (it != currentMB) {
-                            currentMB = it
-                            withContext(Dispatchers.Main) {
-                                listener.onProgress(currentLength * 100 / totalLength, totalLength)
-                            }
+    ) = scope.launch(Dispatchers.IO) {
+        try {
+            val response = apiService.download(url)
+            val body = response.body() ?: throw RuntimeException("下载失败")
+            val totalLength = body.contentLength()
+            if (totalLength <= 0) throw RuntimeException("下载失败")
+            val ios = body.byteStream()
+            val ops =
+                FileOutputStream(File("${application.getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS)}${java.io.File.separator}$fileName"))
+            var currentLength = 0L
+            val bufferSize = 1024 * 8
+            val buffer = ByteArray(bufferSize)
+            val bufferedInputStream = BufferedInputStream(ios, bufferSize)
+            var readLength: Int
+            var currentMB = 0L
+            while (bufferedInputStream.read(buffer, 0, bufferSize)
+                    .also { readLength = it } != -1
+            ) {
+                ops.write(buffer, 0, readLength)
+                currentLength += readLength
+                (currentLength / 1024 / 1024).let { //大于1M显示进度
+                    if (it != currentMB) {
+                        currentMB = it
+                        withContext(Dispatchers.Main) {
+                            listener.onProgress(currentLength * 100 / totalLength, totalLength)
                         }
                     }
                 }
-                bufferedInputStream.close()
-                ops.close()
-                ios.close()
-                withContext(Dispatchers.Main) {
-                    listener.onResult(totalLength, "下载成功")
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    listener.onResult(null, getMessage(e) ?: "下载失败")
-                }
+            }
+            bufferedInputStream.close()
+            ops.close()
+            ios.close()
+            withContext(Dispatchers.Main) {
+                listener.onResult(totalLength, "下载成功")
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                listener.onResult(null, getMessage(e) ?: "下载失败")
             }
         }
     }
@@ -210,44 +211,42 @@ open class DataRepository @Inject constructor(
         scope: CoroutineScope,
         files: List<File>,
         listener: ProgressListener
-    ) {
-        scope.launch(Dispatchers.IO) {
-            try {
-                var totalLength = 0L
-                val builder = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                for (file in files) {
-                    val contentType: String =
-                        URLConnection.getFileNameMap().getContentTypeFor(file.name)
-                    builder.addFormDataPart(
-                        "file",
-                        file.name,
-                        RequestBody.create(MediaType.parse(contentType), file)
-                    )
-                    totalLength += file.length()
-                }
-                val multipartBody = builder.build()
-                val requestBody = if (totalLength > 1024 * 1024) {//大于1M显示进度
-                    ProgressRequestBody(multipartBody) { percent ->
-                        scope.launch(Dispatchers.Main) {
-                            listener.onProgress(percent, totalLength)
-                        }
+    ) = scope.launch(Dispatchers.IO) {
+        try {
+            var totalLength = 0L
+            val builder = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+            for (file in files) {
+                val contentType: String =
+                    URLConnection.getFileNameMap().getContentTypeFor(file.name)
+                builder.addFormDataPart(
+                    "file",
+                    file.name,
+                    RequestBody.create(MediaType.parse(contentType), file)
+                )
+                totalLength += file.length()
+            }
+            val multipartBody = builder.build()
+            val requestBody = if (totalLength > 1024 * 1024) {//大于1M显示进度
+                ProgressRequestBody(multipartBody) { percent ->
+                    scope.launch(Dispatchers.Main) {
+                        listener.onProgress(percent, totalLength)
                     }
+                }
+            } else {
+                multipartBody
+            }
+            val response = apiService.uploadFile(requestBody)
+            withContext(Dispatchers.Main) {
+                if (response.code == 10000) {
+                    listener.onResult(totalLength, "上传成功")
                 } else {
-                    multipartBody
+                    listener.onResult(null, "上传失败")
                 }
-                val response = apiService.uploadFile(requestBody)
-                withContext(Dispatchers.Main) {
-                    if (response.code == 10000) {
-                        listener.onResult(totalLength, "上传成功")
-                    } else {
-                        listener.onResult(null, "上传失败")
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    listener.onResult(null, getMessage(e) ?: "上传失败")
-                }
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                listener.onResult(null, getMessage(e) ?: "上传失败")
             }
         }
     }
